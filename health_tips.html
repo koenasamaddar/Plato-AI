@@ -1,0 +1,566 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <img src="{{ url_for('static', filename='images/blood-drops/celebrate.svg') }}" alt="Health Tips" class="blood-drop excited" id="mainMascot">
+        <h1 class="mt-3">Blood Health Tips</h1>
+        <div class="progress-overview mt-4">
+            <div class="overall-score">
+                <h3>Overall Health Score</h3>
+                <div class="score-circle">
+                    <span id="healthScore">0</span>%
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-4 mb-4">
+            <div class="health-tip-card">
+                <div class="mascot-container">
+                    <img src="{{ url_for('static', filename='images/blood-drops/tip.svg') }}" alt="Iron-rich foods" class="blood-drop">
+                    <div class="tooltip-content">
+                        <p>Iron helps your body make healthy red blood cells. Try to include these foods in your daily diet!</p>
+                    </div>
+                </div>
+                <h3>Iron-Rich Foods</h3>
+                <div class="interactive-content">
+                    <div class="food-tracker">
+                        <div class="food-list">
+                            <div class="food-item" data-points="10">
+                                <input type="checkbox" class="form-check-input">
+                                <label>Lean red meat</label>
+                                <span class="points">+10pts</span>
+                            </div>
+                            <div class="food-item" data-points="8">
+                                <input type="checkbox" class="form-check-input">
+                                <label>Spinach</label>
+                                <span class="points">+8pts</span>
+                            </div>
+                            <div class="food-item" data-points="6">
+                                <input type="checkbox" class="form-check-input">
+                                <label>Beans</label>
+                                <span class="points">+6pts</span>
+                            </div>
+                            <div class="food-item" data-points="5">
+                                <input type="checkbox" class="form-check-input">
+                                <label>Fortified cereals</label>
+                                <span class="points">+5pts</span>
+                            </div>
+                        </div>
+                        <div class="progress mt-3">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="health-tip-card">
+                <div class="mascot-container">
+                    <img src="{{ url_for('static', filename='images/blood-drops/excited.svg') }}" alt="Exercise" class="blood-drop">
+                    <div class="tooltip-content">
+                        <p>Regular exercise improves blood circulation and heart health. Let's get moving!</p>
+                    </div>
+                </div>
+                <h3>Exercise Routine</h3>
+                <div class="interactive-content">
+                    <div class="exercise-tracker">
+                        <div class="timer-display">30:00</div>
+                        <button class="btn btn-primary start-timer">Start Exercise Timer</button>
+                        <div class="weekly-progress mt-3">
+                            <h5>Weekly Progress</h5>
+                            <div class="day-circles">
+                                <div class="day-circle" data-day="Mon">M</div>
+                                <div class="day-circle" data-day="Tue">T</div>
+                                <div class="day-circle" data-day="Wed">W</div>
+                                <div class="day-circle" data-day="Thu">T</div>
+                                <div class="day-circle" data-day="Fri">F</div>
+                                <div class="day-circle" data-day="Sat">S</div>
+                                <div class="day-circle" data-day="Sun">S</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 mb-4">
+            <div class="health-tip-card">
+                <div class="mascot-container">
+                    <img src="{{ url_for('static', filename='images/blood-drops/happy.svg') }}" alt="Hydration" class="blood-drop">
+                    <div class="tooltip-content">
+                        <p>Staying hydrated helps maintain healthy blood volume. Track your water intake!</p>
+                    </div>
+                </div>
+                <h3>Hydration Guide</h3>
+                <div class="interactive-content">
+                    <div class="water-tracker position-relative">
+                        <div class="water-level"></div>
+                        <img src="{{ url_for('static', filename='images/blood-drops/happy.svg') }}" alt="Water tracker" class="water-tracker-mascot">
+                        <button class="btn btn-primary add-water">Add Glass</button>
+                        <div class="water-stats mt-3">
+                            <div class="stat">
+                                <span class="stat-value" id="glassCount">0/8</span>
+                                <span class="stat-label">Today's Glasses</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="streakCount">0</span>
+                                <span class="stat-label">Day Streak</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-lg-6 mb-4">
+            <div class="health-tip-card">
+                <div class="mascot-container">
+                    <img src="{{ url_for('static', filename='images/blood-drops/tip.svg') }}" alt="Sleep" class="blood-drop">
+                    <div class="tooltip-content">
+                        <p>Quality sleep helps your body produce healthy blood cells. Track your sleep!</p>
+                    </div>
+                </div>
+                <h3>Sleep Tracker</h3>
+                <div class="interactive-content">
+                    <div class="sleep-tracker">
+                        <div class="sleep-input">
+                            <label>Hours slept last night:</label>
+                            <div class="input-group">
+                                <input type="number" class="form-control" id="sleepHours" min="0" max="24" step="0.5">
+                                <button class="btn btn-primary" id="logSleep">Log Sleep</button>
+                            </div>
+                        </div>
+                        <div class="sleep-chart mt-3">
+                            <canvas id="sleepChart"></canvas>
+                        </div>
+                        <div class="sleep-stats mt-3">
+                            <div class="stat">
+                                <span class="stat-value" id="avgSleep">0</span>
+                                <span class="stat-label">Avg Hours</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-value" id="qualityDays">0</span>
+                                <span class="stat-label">Quality Nights</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 mb-4">
+            <div class="health-tip-card">
+                <div class="mascot-container">
+                    <img src="{{ url_for('static', filename='images/blood-drops/tip.svg') }}" alt="Vitamins" class="blood-drop">
+                    <div class="tooltip-content">
+                        <p>Track your daily vitamin intake for optimal blood health!</p>
+                    </div>
+                </div>
+                <h3>Vitamin Tracker</h3>
+                <div class="interactive-content">
+                    <div class="vitamin-tracker">
+                        <div class="vitamin-checklist">
+                            <div class="vitamin-item" data-points="10">
+                                <input type="checkbox" class="form-check-input">
+                                <label>Vitamin B12</label>
+                                <span class="points">+10pts</span>
+                            </div>
+                            <div class="vitamin-item" data-points="8">
+                                <input type="checkbox" class="form-check-input">
+                                <label>Vitamin D</label>
+                                <span class="points">+8pts</span>
+                            </div>
+                            <div class="vitamin-item" data-points="6">
+                                <input type="checkbox" class="form-check-input">
+                                <label>Folic Acid</label>
+                                <span class="points">+6pts</span>
+                            </div>
+                            <div class="vitamin-item" data-points="5">
+                                <input type="checkbox" class="form-check-input">
+                                <label>Iron Supplement</label>
+                                <span class="points">+5pts</span>
+                            </div>
+                        </div>
+                        <div class="vitamin-chart mt-3">
+                            <canvas id="vitaminChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="achievements-section mt-4">
+        <h2 class="text-center mb-4">Your Achievements</h2>
+        <div class="row" id="achievementsList">
+            <!-- Achievements will be added here dynamically -->
+        </div>
+    </div>
+</div>
+
+<style>
+.score-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 8px solid #ef5350;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin: 20px auto;
+    color: #ef5350;
+}
+
+.food-item, .vitamin-item {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.food-item label, .vitamin-item label {
+    margin: 0 10px;
+    flex-grow: 1;
+}
+
+.points {
+    color: #ef5350;
+    font-weight: 600;
+}
+
+.day-circles {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.day-circle {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid #ef5350;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #ef5350;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.day-circle.completed {
+    background: #ef5350;
+    color: white;
+}
+
+.water-stats, .sleep-stats {
+    display: flex;
+    justify-content: space-around;
+    text-align: center;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ef5350;
+}
+
+.stat-label {
+    font-size: 14px;
+    color: #666;
+}
+
+.achievement-card {
+    background: white;
+    border-radius: 15px;
+    padding: 15px;
+    margin: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.achievement-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.achievement-info {
+    flex-grow: 1;
+}
+
+.achievement-title {
+    font-weight: bold;
+    margin: 0;
+}
+
+.achievement-description {
+    color: #666;
+    margin: 5px 0 0 0;
+    font-size: 14px;
+}
+
+/* Animation styles */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.bounce {
+    animation: bounce 0.5s ease infinite;
+}
+
+@keyframes celebrate {
+    0% { transform: scale(1) rotate(0); }
+    50% { transform: scale(1.2) rotate(10deg); }
+    100% { transform: scale(1) rotate(0); }
+}
+
+.celebrate {
+    animation: celebrate 0.5s ease;
+}
+
+.confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+}
+
+.water-level {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background: linear-gradient(to top, #ff6b6b, #ff8787);
+    transition: height 0.3s ease;
+    border-radius: 0 0 10px 10px;
+    opacity: 0.7;
+}
+
+.water-tracker {
+    position: relative;
+    height: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.water-tracker-mascot {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+    transition: transform 0.3s ease;
+}
+
+.day-circle {
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.day-circle:hover {
+    transform: scale(1.1);
+}
+
+.achievement-card {
+    transform: translateY(20px);
+    opacity: 0;
+    animation: slideIn 0.5s ease forwards;
+}
+
+@keyframes slideIn {
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    let healthScore = 0;
+    const achievements = [];
+
+    // Food and Vitamin Tracking
+    function updateProgress(items, progressBar) {
+        const total = Array.from(items).reduce((sum, item) => sum + parseInt(item.dataset.points), 0);
+        const checked = Array.from(items).filter(item => item.querySelector('input').checked)
+            .reduce((sum, item) => sum + parseInt(item.dataset.points), 0);
+        const percentage = (checked / total) * 100;
+        progressBar.style.width = `${percentage}%`;
+        updateHealthScore();
+    }
+
+    document.querySelectorAll('.food-item input, .vitamin-item input').forEach(input => {
+        input.addEventListener('change', (e) => {
+            const items = e.target.closest('.food-tracker, .vitamin-tracker')
+                .querySelectorAll('.food-item, .vitamin-item');
+            const progressBar = e.target.closest('.health-tip-card')
+                .querySelector('.progress-bar');
+            updateProgress(items, progressBar);
+
+            if (e.target.checked) {
+                const mascot = e.target.closest('.health-tip-card').querySelector('.blood-drop');
+                mascot.classList.add('happy');
+                setTimeout(() => mascot.classList.remove('happy'), 1000);
+            }
+        });
+    });
+
+    // Exercise Tracking
+    let exerciseStreak = 0;
+    document.querySelectorAll('.day-circle').forEach(circle => {
+        circle.addEventListener('click', () => {
+            circle.classList.toggle('completed');
+            exerciseStreak = document.querySelectorAll('.day-circle.completed').length;
+            updateHealthScore();
+
+            if (circle.classList.contains('completed')) {
+                createAchievement('Exercise Champion', 'Completed a workout session!');
+            }
+        });
+    });
+
+    // Sleep Tracking
+    const sleepData = {
+        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        data: [0, 0, 0, 0, 0, 0, 0]
+    };
+
+    const sleepChart = new Chart(document.getElementById('sleepChart'), {
+        type: 'bar',
+        data: {
+            labels: sleepData.labels,
+            datasets: [{
+                label: 'Hours of Sleep',
+                data: sleepData.data,
+                backgroundColor: '#ef5350'
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 12
+                }
+            }
+        }
+    });
+
+    document.getElementById('logSleep').addEventListener('click', () => {
+        const hours = parseFloat(document.getElementById('sleepHours').value);
+        if (hours >= 0 && hours <= 24) {
+            const today = new Date().getDay();
+            sleepData.data[today] = hours;
+            sleepChart.update();
+
+            const avgSleep = sleepData.data.reduce((a, b) => a + b, 0) / 7;
+            document.getElementById('avgSleep').textContent = avgSleep.toFixed(1);
+
+            const qualityNights = sleepData.data.filter(h => h >= 7).length;
+            document.getElementById('qualityDays').textContent = qualityNights;
+
+            if (hours >= 7) {
+                createAchievement('Sleep Master', 'Got a quality night\'s sleep!');
+            }
+
+            updateHealthScore();
+        }
+    });
+
+    // Achievement System
+    function createAchievement(title, description) {
+        if (!achievements.some(a => a.title === title)) {
+            achievements.push({ title, description });
+            
+            const achievementDiv = document.createElement('div');
+            achievementDiv.className = 'col-md-4';
+            achievementDiv.innerHTML = `
+                <div class="achievement-card">
+                    <img src="{{ url_for('static', filename='images/blood-drops/celebrate.svg') }}" 
+                         class="achievement-icon blood-drop">
+                    <div class="achievement-info">
+                        <h4 class="achievement-title">${title}</h4>
+                        <p class="achievement-description">${description}</p>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('achievementsList').appendChild(achievementDiv);
+            
+            // Show celebration animation
+            const mascot = document.getElementById('mainMascot');
+            mascot.src = "{{ url_for('static', filename='images/blood-drops/celebrate.svg') }}";
+            mascot.classList.add('celebrate');
+            setTimeout(() => {
+                mascot.src = "{{ url_for('static', filename='images/blood-drops/happy.svg') }}";
+                mascot.classList.remove('celebrate');
+            }, 2000);
+        }
+    }
+
+    // Health Score Calculation
+    function updateHealthScore() {
+        const foodScore = calculateFoodScore();
+        const exerciseScore = calculateExerciseScore();
+        const waterScore = calculateWaterScore();
+        const sleepScore = calculateSleepScore();
+        const vitaminScore = calculateVitaminScore();
+
+        healthScore = Math.round((foodScore + exerciseScore + waterScore + sleepScore + vitaminScore) / 5);
+        document.getElementById('healthScore').textContent = healthScore;
+
+        if (healthScore >= 80) {
+            createAchievement('Health Champion', 'Achieved an excellent health score!');
+        }
+    }
+
+    function calculateFoodScore() {
+        const checkedFoods = document.querySelectorAll('.food-item input:checked').length;
+        return (checkedFoods / 4) * 100;
+    }
+
+    function calculateExerciseScore() {
+        return (exerciseStreak / 7) * 100;
+    }
+
+    function calculateWaterScore() {
+        return (glasses / 8) * 100;
+    }
+
+    function calculateSleepScore() {
+        const avgSleep = parseFloat(document.getElementById('avgSleep').textContent);
+        return avgSleep >= 7 ? 100 : (avgSleep / 7) * 100;
+    }
+
+    function calculateVitaminScore() {
+        const checkedVitamins = document.querySelectorAll('.vitamin-item input:checked').length;
+        return (checkedVitamins / 4) * 100;
+    }
+
+    // Initialize health score
+    updateHealthScore();
+});
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/health-tracker.js') }}"></script>
+{% endblock %}

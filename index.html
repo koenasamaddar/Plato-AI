@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="welcome-popup" id="welcomePopup">
+    <div class="popup-content">
+        <h2>Welcome to Plato.</h2>
+        <button onclick="closePopup()" class="btn btn-primary">Get Started</button>
+    </div>
+</div>
+
+<div class="hero-section">
+    <div class="container">
+        <h1>Plato AI</h1>
+        <h2>Your Advanced Blood Health Analysis Tool</h2>
+        <p>Upload your blood sample images for instant AI-powered analysis and health insights</p>
+        <a href="/upload" class="btn btn-primary btn-lg">Start Analysis</a>
+    </div>
+</div>
+
+<div class="features-section">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-microscope"></i>
+                    <h3>AI Analysis</h3>
+                    <p>Advanced image processing for accurate blood sample analysis</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-chart-line"></i>
+                    <h3>Detailed Reports</h3>
+                    <p>Comprehensive health metrics and interactive visualizations</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="feature-card">
+                    <i class="fas fa-heart"></i>
+                    <h3>Health Tips</h3>
+                    <p>Personalized recommendations for better blood health</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

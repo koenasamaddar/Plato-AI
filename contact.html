@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <img src="{{ url_for('static', filename='images/blood-drops/tip.svg') }}" alt="Contact Us" class="blood-drop">
+        <h1 class="mt-3">Contact Our Team</h1>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="team-members">
+                <div class="team-member-card mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="{{ url_for('static', filename='images/blood-drops/happy.svg') }}" alt="Nikita" class="blood-drop team-avatar">
+                        </div>
+                        <div class="col-md-10">
+                            <h3>Nikita Zambare</h3>
+                            <p class="role">Model Training Lead</p>
+                            <div class="contact-info">
+                                <p><i class="fas fa-envelope"></i> nikita.zambare@platoai.com</p>
+                                <p><i class="fas fa-phone"></i> +91 98677 40243</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member-card mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="{{ url_for('static', filename='images/blood-drops/excited.svg') }}" alt="Nirbhay" class="blood-drop team-avatar">
+                        </div>
+                        <div class="col-md-10">
+                            <h3>Nirbhay Mohite</h3>
+                            <p class="role">Front-End Lead</p>
+                            <div class="contact-info">
+                                <p><i class="fas fa-envelope"></i> nirbhay.mohite@platoai.com</p>
+                                <p><i class="fas fa-phone"></i> +91 95945 07395</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="team-member-card mb-4">
+                    <div class="row align-items-center">
+                        <div class="col-md-2">
+                            <img src="{{ url_for('static', filename='images/blood-drops/tip.svg') }}" alt="Koena" class="blood-drop team-avatar">
+                        </div>
+                        <div class="col-md-10">
+                            <h3>Koena Samaddar</h3>
+                            <p class="role">Software Architect</p>
+                            <div class="contact-info">
+                                <p><i class="fas fa-envelope"></i> koena.samaddar@platoai.com</p>
+                                <p><i class="fas fa-phone"></i> +91 9354913807</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="contact-form mt-5">
+                <h2 class="text-center mb-4">Send Us a Message</h2>
+                <form id="contactForm">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="name" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email</label>
+                        <input type="email" class="form-control" id="email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="message" class="form-label">Message</label>
+                        <textarea class="form-control" id="message" rows="5" required></textarea>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Send Message</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.team-member-card {
+    background: white;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.team-member-card:hover {
+    transform: translateY(-5px);
+}
+
+.team-avatar {
+    width: 80px;
+    height: 80px;
+}
+
+.role {
+    color: #ef5350;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+.contact-info {
+    font-size: 0.9rem;
+}
+
+.contact-info i {
+    color: #ef5350;
+    margin-right: 10px;
+}
+
+.contact-form {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+</style>
+
+<script>
+document.getElementById('contactForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const mascot = document.querySelector('.blood-drop');
+    mascot.src = "{{ url_for('static', filename='images/blood-drops/celebrate.svg') }}";
+    mascot.classList.add('celebrate');
+    
+    setTimeout(() => {
+        mascot.src = "{{ url_for('static', filename='images/blood-drops/tip.svg') }}";
+        mascot.classList.remove('celebrate');
+    }, 2000);
+
+    // Show success message
+    const alert = document.createElement('div');
+    alert.className = 'alert alert-success mt-3';
+    alert.textContent = 'Message sent successfully! We\'ll get back to you soon.';
+    e.target.appendChild(alert);
+    
+    // Clear form
+    e.target.reset();
+    
+    // Remove alert after 3 seconds
+    setTimeout(() => alert.remove(), 3000);
+});
+</script>
+{% endblock %}

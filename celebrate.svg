@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="100" height="100" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+    <g transform="translate(10,10) scale(0.8)">
+        <path d="M50 0 C50 0 20 40 20 70 C20 85.6 33.4 100 50 100 C66.6 100 80 85.6 80 70 C80 40 50 0 50 0" fill="#ef5350"/>
+        <path d="M35 55 L45 55" stroke="#fff" stroke-width="3"/>
+        <path d="M55 55 L65 55" stroke="#fff" stroke-width="3"/>
+        <path d="M35 75 Q50 90 65 75" stroke="#fff" stroke-width="3" fill="none"/>
+        <!-- Stars around the drop -->
+        <path d="M20 30 L22 35 L17 33 L20 30 M75 35 L77 40 L72 38 L75 35 M85 60 L87 65 L82 63 L85 60" fill="#fff"/>
+    </g>
+</svg>
