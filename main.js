@@ -1,95 +1,142 @@
-// Welcome popup handling
-function closePopup() {
-    document.getElementById('welcomePopup').style.display = 'none';
-}
-
-// Image upload and analysis
-document.addEventListener('DOMContentLoaded', () => {
-    const uploadForm = document.getElementById('uploadForm');
-    const analysisResults = document.getElementById('analysisResults');
-    
-    if (uploadForm) {
-        uploadForm.addEventListener('submit', async (e) => {
+// Wait for the DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
             e.preventDefault();
-            
-            const formData = new FormData(uploadForm);
-            const loadingDiv = document.createElement('div');
-            loadingDiv.innerHTML = '<div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>';
-            analysisResults.innerHTML = '';
-            analysisResults.appendChild(loadingDiv);
-
-            try {
-                const response = await fetch('/upload', {
-                    method: 'POST',
-                    body: formData
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
                 });
-                
-                const data = await response.json();
-                
-                if (data.error) {
-                    analysisResults.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
-                    return;
-                }
+            }
+        });
+    });
 
-                // Create charts using Plotly
-                const healthScoreChart = {
-                    values: [data.health_score, 100 - data.health_score],
-                    labels: ['Health Score', 'Remaining'],
-                    type: 'pie',
-                    hole: 0.7,
-                    marker: {
-                        colors: ['#ef5350', '#ffebee']
-                    }
-                };
+    // Navbar color change on scroll
+    window.addEventListener('scroll', function() {
+        const navbar = document.querySelector('.navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('bg-dark');
+            navbar.classList.remove('bg-transparent');
+        } else {
+            navbar.classList.add('bg-transparent');
+            navbar.classList.remove('bg-dark');
+        }
+    });
 
-                const bloodCountsChart = {
-                    x: ['RBC Count', 'WBC Count', 'Hemoglobin'],
-                    y: [
-                        parseFloat(data.rbc_count),
-                        parseFloat(data.wbc_count),
-                        parseFloat(data.hemoglobin)
-                    ],
-                    type: 'bar',
-                    marker: {
-                        color: '#ef5350'
-                    }
-                };
+    // Image upload and processing
+    const imageUpload = document.getElementById('imageUpload');
+    const processButton = document.getElementById('processImage');
+    const resultPreview = document.getElementById('resultPreview');
 
-                analysisResults.innerHTML = `
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div id="healthScore"></div>
+    if (imageUpload && processButton && resultPreview) {
+        processButton.addEventListener('click', function() {
+            if (imageUpload.files.length > 0) {
+                // Show loading state
+                resultPreview.innerHTML = `
+                    <div class="text-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
                         </div>
-                        <div class="col-md-6">
-                            <div id="bloodCounts"></div>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <h3>Analysis Results:</h3>
-                        <ul class="list-group">
-                            <li class="list-group-item">RBC Count: ${data.rbc_count}</li>
-                            <li class="list-group-item">WBC Count: ${data.wbc_count}</li>
-                            <li class="list-group-item">Hemoglobin: ${data.hemoglobin}</li>
-                            <li class="list-group-item">Overall Health Score: ${data.health_score}%</li>
-                        </ul>
+                        <p class="mt-3">Processing image...</p>
                     </div>
                 `;
 
-                Plotly.newPlot('healthScore', [healthScoreChart], {
-                    title: 'Health Score',
-                    height: 300,
-                    margin: { t: 40, b: 0, l: 0, r: 0 }
-                });
+                let formData = new FormData();
+                formData.append("file", imageUpload.files[0]);
 
-                Plotly.newPlot('bloodCounts', [bloodCountsChart], {
-                    title: 'Blood Components',
-                    height: 300,
-                    margin: { t: 40, b: 40, l: 40, r: 40 }
+                // Send image to backend
+                fetch("http://127.0.0.1:5000/upload", {
+                    method: "POST",
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.image_url) {
+                        // Display processed image and detection results
+                        resultPreview.innerHTML = `
+                            <div class="alert alert-success">
+                                <h4>Analysis Complete!</h4>
+                                <p>Detected Platelets: ${data.detections[0].count}</p>
+                                <p>Processing Time: ~2 seconds</p>
+                            </div>
+                            <img src="http://127.0.0.1:5000/output" class="img-fluid mt-3" alt="Processed Image">
+                        `;
+                    } else {
+                        resultPreview.innerHTML = `
+                            <div class="alert alert-danger">
+                                Error processing image. Please try again.
+                            </div>
+                        `;
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    resultPreview.innerHTML = `
+                        <div class="alert alert-danger">
+                            Server error. Please try again later.
+                        </div>
+                    `;
                 });
+            } else {
+                resultPreview.innerHTML = `
+                    <div class="alert alert-warning">
+                        Please select an image first.
+                    </div>
+                `;
+            }
+        });
 
-            } catch (error) {
-                analysisResults.innerHTML = '<div class="alert alert-danger">An error occurred during analysis.</div>';
+        // Preview uploaded image
+        imageUpload.addEventListener('change', function() {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    resultPreview.innerHTML = `
+                        <img src="${e.target.result}" class="img-fluid mb-3" alt="Uploaded Image">
+                        <p>Click "Process Image" to analyze</p>
+                    `;
+                };
+                reader.readAsDataURL(this.files[0]);
             }
         });
     }
+
+    // Form submission handling.
+    const contactForm = document.getElementById('contactForm');
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Show success message
+            const formElements = contactForm.elements;
+            for (let element of formElements) {
+                element.disabled = true;
+            }
+            contactForm.innerHTML += `
+                <div class="alert alert-success mt-3">
+                    Thank you for your message! We'll get back to you soon.
+                </div>
+            `;
+        });
+    }
+
+    // Add animation classes to elements when they come into view
+    const observerCallback = (entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('fade-in');
+                observer.unobserve(entry.target);
+            }
+        });
+    };
+
+    const observer = new IntersectionObserver(observerCallback, {
+        threshold: 0.1
+    });
+
+    document.querySelectorAll('.card, .timeline-step, .benefits > div').forEach(element => {
+        observer.observe(element);
+    });
 });
